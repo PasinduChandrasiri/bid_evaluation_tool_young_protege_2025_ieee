@@ -103,7 +103,7 @@ Fork this repository, submit issues or pull requests, and collaborate to build s
 
 ## 👤 Author
 
-Built and maintained by a passionate developer team dedicated to simplifying construction procurement in Sri Lanka.
+Built and maintained by a Pasindu Chandrasiri LinkedIn[www.linkedin.com/in/pasinduchandrasiri]
 
 ---
 
