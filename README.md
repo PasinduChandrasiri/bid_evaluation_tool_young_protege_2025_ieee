@@ -103,7 +103,7 @@ Fork this repository, submit issues or pull requests, and collaborate to build s
 
 ## 👤 Author
 
-Built and maintained by a Pasindu Chandrasiri LinkedIn[www.linkedin.com/in/pasinduchandrasiri]
+Built and maintained by a Pasindu Chandrasiri [LinkedIn](www.linkedin.com/in/pasinduchandrasiri)
 
 ---
 
