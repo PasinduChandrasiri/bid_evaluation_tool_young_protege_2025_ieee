@@ -10,6 +10,8 @@ export default function DashboardPage() {
   const tenderId = 1; // Hardcoded for demo
   const [message, setMessage] = useState("");
   const [fileInputKey, setFileInputKey] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
 
   const handleFileChange = e => setFile(e.target.files[0]);
 
@@ -19,7 +21,13 @@ export default function DashboardPage() {
       setMessage("Please fill all fields and select a file.");
       return;
     }
+    const numericPrice = Number(price);
+    if (!Number.isFinite(numericPrice) || numericPrice <= 0) {
+      setMessage("Please enter a bid price greater than zero.");
+      return;
+    }
     try {
+      setIsUploading(true);
       setMessage("");
       const formData = new FormData();
       formData.append("file", file);
@@ -35,12 +43,16 @@ export default function DashboardPage() {
       setFileInputKey(prev => prev + 1);
     } catch (err) {
       setMessage(`Error: ${err.message}`);
+    } finally {
+      setIsUploading(false);
     }
   };
 
   const handleApprove = async () => {
     // For demo: Approve bid with id = 1 (hardcoded)
     try {
+      setIsApproving(true);
+      setMessage("");
       const blob = await approveBid(1, user.token);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -52,6 +64,8 @@ export default function DashboardPage() {
       setMessage("Letter of Acceptance downloaded.");
     } catch (err) {
       setMessage(`Error: ${err.message}`);
+    } finally {
+      setIsApproving(false);
     }
   };
 
@@ -68,11 +82,15 @@ export default function DashboardPage() {
         <br />
         <input key={fileInputKey} type="file" onChange={handleFileChange} required />
         <br />
-        <button type="submit">Upload Bid</button>
+        <button type="submit" disabled={isUploading}>
+          {isUploading ? "Uploading..." : "Upload Bid"}
+        </button>
       </form>
 
       <h2>Approve Bid (demo)</h2>
-      <button onClick={handleApprove}>Generate & Download Letter of Acceptance (Bid ID 1)</button>
+      <button onClick={handleApprove} disabled={isApproving}>
+        {isApproving ? "Generating..." : "Generate & Download Letter of Acceptance (Bid ID 1)"}
+      </button>
 
       {message && <p>{message}</p>}
     </div>
