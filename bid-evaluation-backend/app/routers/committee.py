@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from fastapi.responses import StreamingResponse
-from app import database, models, schemas, evaluation, letter_generator
+from app import database, models, letter_generator
 from app.auth import get_current_active_user
 
 router = APIRouter()
@@ -21,6 +20,9 @@ def approve_bid(bid_id: int, db: Session = Depends(database.get_db), current_use
     bid = db.query(models.Bid).filter(models.Bid.id == bid_id).first()
     if not bid:
         raise HTTPException(status_code=404, detail="Bid not found")
+
+    if bid.status == models.BidStatus.selected:
+        raise HTTPException(status_code=400, detail="Bid already selected")
 
     # Mark selected and generate Letter of Acceptance
     bid.status = models.BidStatus.selected

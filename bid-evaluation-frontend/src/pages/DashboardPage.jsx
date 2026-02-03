@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { uploadBid, approveBid } from "../api/api";
 
@@ -7,8 +7,9 @@ export default function DashboardPage() {
   const [file, setFile] = useState(null);
   const [bidderName, setBidderName] = useState("");
   const [price, setPrice] = useState("");
-  const [tenderId, setTenderId] = useState(1); // Hardcoded for demo
+  const tenderId = 1; // Hardcoded for demo
   const [message, setMessage] = useState("");
+  const [fileInputKey, setFileInputKey] = useState(0);
 
   const handleFileChange = e => setFile(e.target.files[0]);
 
@@ -19,6 +20,7 @@ export default function DashboardPage() {
       return;
     }
     try {
+      setMessage("");
       const formData = new FormData();
       formData.append("file", file);
       formData.append("bidder_name", bidderName);
@@ -27,6 +29,10 @@ export default function DashboardPage() {
 
       await uploadBid(formData, user.token);
       setMessage("Bid uploaded successfully.");
+      setBidderName("");
+      setPrice("");
+      setFile(null);
+      setFileInputKey(prev => prev + 1);
     } catch (err) {
       setMessage(`Error: ${err.message}`);
     }
@@ -60,7 +66,7 @@ export default function DashboardPage() {
         <br />
         <input type="number" placeholder="Bid Price" value={price} onChange={e=>setPrice(e.target.value)} required />
         <br />
-        <input type="file" onChange={handleFileChange} required />
+        <input key={fileInputKey} type="file" onChange={handleFileChange} required />
         <br />
         <button type="submit">Upload Bid</button>
       </form>
