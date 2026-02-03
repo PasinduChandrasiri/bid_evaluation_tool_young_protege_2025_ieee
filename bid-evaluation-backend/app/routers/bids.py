@@ -13,8 +13,13 @@ async def upload_bid(
     file: UploadFile = File(...),
     db: Session = Depends(database.get_db)
 ):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Bid document is required")
     if price <= 0:
         raise HTTPException(status_code=400, detail="Bid price must be greater than zero")
+    tender = db.query(models.Tender).filter(models.Tender.id == tender_id).first()
+    if not tender:
+        raise HTTPException(status_code=404, detail="Tender not found")
     # Upload file to Firebase Storage
     destination_path = f"bid_documents/{tender_id}_{bidder_name}_{file.filename}"
     url = firebase_client.upload_file_to_firebase(file.file, destination_path)

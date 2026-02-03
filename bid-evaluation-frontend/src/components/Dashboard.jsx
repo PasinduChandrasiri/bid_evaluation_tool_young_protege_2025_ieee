@@ -30,6 +30,10 @@ export default function Dashboard() {
 
   const handleRefresh = () => {
     setError("");
+    if (!user?.token) {
+      setError("Please log in to refresh bids.");
+      return;
+    }
     fetchBids(user.token, tenderId)
       .then(setBids)
       .catch(e => setError(e.message));
