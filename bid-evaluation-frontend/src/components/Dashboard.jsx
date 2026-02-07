@@ -4,6 +4,9 @@ import { useAuth } from "../contexts/AuthContext";
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 async function fetchBids(token, tenderId) {
+  if (!tenderId) {
+    throw new Error("Tender ID is required.");
+  }
   const res = await fetch(`${API_BASE}/bids/tender/${tenderId}`, {
     headers: { "Authorization": `Bearer ${token}` }
   });
@@ -25,12 +28,23 @@ export default function Dashboard() {
     }
   }, [user, tenderId]);
 
+  const handleRefresh = () => {
+    setError("");
+    if (!user?.token) {
+      setError("Please log in to refresh bids.");
+      return;
+    }
+    fetchBids(user.token, tenderId)
+      .then(setBids)
+      .catch(e => setError(e.message));
+  };
+
   return (
     <div>
       <h2>Bids Dashboard</h2>
       <label>Tender ID: </label>
       <input value={tenderId} onChange={e => setTenderId(e.target.value)} />
-      <button onClick={() => fetchBids(user.token, tenderId).then(setBids).catch(e => setError(e.message))}>
+      <button onClick={handleRefresh}>
         Refresh
       </button>
       {error && <p style={{color: "red"}}>{error}</p>}

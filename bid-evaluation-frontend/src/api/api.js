@@ -3,8 +3,8 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 export async function login(data) {
   const response = await fetch(`${API_BASE}/auth/login`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(data),
   });
   if (!response.ok) {
     const error = await response.json();
